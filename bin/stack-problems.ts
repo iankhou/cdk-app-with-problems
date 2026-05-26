@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib/core';
-import { StackProblemsStack } from '../lib/stack-problems-stack';
+import { OomKillStack } from '../lib/stack-problems-stack';
 
 const app = new cdk.App();
-new StackProblemsStack(app, 'StackProblemsStack', {
+new OomKillStack(app, 'OomKillStack', {
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
