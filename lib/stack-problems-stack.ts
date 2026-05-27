@@ -2,6 +2,8 @@ import * as cdk from 'aws-cdk-lib/core';
 import { Construct } from 'constructs';
 import * as ecs from 'aws-cdk-lib/aws-ecs';
 import * as ec2 from 'aws-cdk-lib/aws-ec2';
+import * as ecr from 'aws-cdk-lib/aws-ecr';
+import * as iam from 'aws-cdk-lib/aws-iam';
 
 export class ImagePullFailureStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -11,6 +13,11 @@ export class ImagePullFailureStack extends cdk.Stack {
     const cluster = new ecs.Cluster(this, 'Cluster', { vpc });
 
     const taskDefinition = new ecs.FargateTaskDefinition(this, 'TaskDef', {});
+
+    // Grant ECR pull permissions so we get past auth and hit the actual "image not found" error
+    taskDefinition.executionRole!.addManagedPolicy(
+      iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonECSTaskExecutionRolePolicy'),
+    );
 
     taskDefinition.addContainer('DefaultContainer', {
       // Nonexistent image tag to trigger CannotPullContainerError
