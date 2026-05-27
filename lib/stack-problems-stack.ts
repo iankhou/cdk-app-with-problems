@@ -5,7 +5,7 @@ import * as ec2 from 'aws-cdk-lib/aws-ec2';
 import * as elbv2 from 'aws-cdk-lib/aws-elasticloadbalancingv2';
 import { Platform } from 'aws-cdk-lib/aws-ecr-assets';
 
-export class StackProblemsStack extends cdk.Stack {
+export class HealthCheckFailureStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
