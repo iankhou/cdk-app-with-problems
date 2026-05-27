@@ -12,12 +12,16 @@ export class ImagePullFailureStack extends cdk.Stack {
     const vpc = new ec2.Vpc(this, 'Vpc', { maxAzs: 2 });
     const cluster = new ecs.Cluster(this, 'Cluster', { vpc });
 
-    const taskDefinition = new ecs.FargateTaskDefinition(this, 'TaskDef', {});
+    const executionRole = new iam.Role(this, 'TaskExecutionRole', {
+      assumedBy: new iam.ServicePrincipal('ecs-tasks.amazonaws.com'),
+      managedPolicies: [
+        iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonECSTaskExecutionRolePolicy'),
+      ],
+    });
 
-    // Grant ECR pull permissions so we get past auth and hit the actual "image not found" error
-    taskDefinition.executionRole!.addManagedPolicy(
-      iam.ManagedPolicy.fromAwsManagedPolicyName('service-role/AmazonECSTaskExecutionRolePolicy'),
-    );
+    const taskDefinition = new ecs.FargateTaskDefinition(this, 'TaskDef', {
+      executionRole,
+    });
 
     taskDefinition.addContainer('DefaultContainer', {
       // Nonexistent image tag to trigger CannotPullContainerError
