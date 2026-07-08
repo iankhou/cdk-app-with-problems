@@ -17,16 +17,17 @@ export class FailingCustomResourceStack extends cdk.Stack {
     const fn = new lambda.Function(this, 'CrHandler', {
       runtime: lambda.Runtime.NODEJS_20_X,
       handler: 'index.handler',
+      loggingFormat: lambda.LoggingFormat.JSON,
       code: lambda.Code.fromInline([
         "const response = require('cfn-response');",
         "exports.handler = (event, context) => {",
         "  console.log('request type:', JSON.stringify(event.RequestType));",
-        "  if (event.RequestType === 'Create') {",
+        // "  if (event.RequestType === 'Create') {",
         "    console.error('Boom: simulated custom resource failure on Create');",
         "    response.send(event, context, response.FAILED, { error: 'simulated' });",
         "    return;",
-        "  }",
-        "  response.send(event, context, response.SUCCESS, {});",
+        // "  }",
+        // "  response.send(event, context, response.SUCCESS, {});",
         "};",
       ].join('\n')),
     });
